@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kstupgrade.dao.pathclass.PathClassMapper">
+
+
+    <insert id="addPathclass">
+     insert into  pathclass
+     (
+      uuid,
+      path,
+      pathname,
+      type
+     )
+     values
+     (
+      #{uuid},
+      #{path},
+      #{pathname},
+      #{type}
+     )
+
+
+
+    </insert>
+    <update id="updatedPathclass">
+     update pathclass set
+         pathname=#{pathname},
+         type=#{type}
+     where uuid=#{uuid} and  path=#{path};
+    </update>
+    <select id="setectPathclassByPath" resultType="com.example.kstupgrade.com.obj.PathClassPoJo">
+            select  * from pathclass where  path=#{path};
+
+
+    </select>
+    <select id="selectAllPathClass" resultType="com.example.kstupgrade.com.obj.PathClassPoJo">
+            select  *  from pathclass;
+    </select>
+</mapper>

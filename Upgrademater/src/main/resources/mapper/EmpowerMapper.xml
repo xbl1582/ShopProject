@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kstupgrade.dao.empower.EmpowerMapper">
+        <sql id="baseselect">
+            select * from empower
+
+        </sql>
+
+
+    <insert id="addEmpower">
+        INSERT INTO empower(uuid,
+        <if test="sn !=null and sn !=''">
+                            sn ,
+        </if>
+        <if test="lic !=null and lic !=''">
+                            lic,
+        </if>
+                            snpath, licpath, uploadtime, sndownloadtime,licdownloadtime,snsize,licsize,licmd5code,type,sncode)
+        VALUES (
+                #{uuid},
+                <if test="sn !=null and sn !=''">
+                    #{sn},
+
+                </if>
+                <if test="lic !=null and lic !=''">
+                    #{lic},
+                </if>
+                #{snpath},
+                #{licpath},
+                #{uploadtime},
+                #{sndownloadtime},
+                #{licdownloadtime},
+                #{snsize},
+                #{licsize},
+                #{licmd5code},
+                #{type},
+                #{sncode}
+               );
+
+    </insert>
+    <update id="updateEmpower">
+        update  empower set
+        lic=#{lic},
+        snpath=#{snpath},
+        licpath=#{licpath},
+        uploadtime=#{uploadtime},
+        sndownloadtime=#{sndownloadtime},
+        licdownloadtime=#{licdownloadtime},
+        snsize=#{snsize},
+        licsize=#{licsize}
+        <where>
+            sn=#{sn} and uuid=#{uuid}
+        </where>
+
+
+    </update>
+    <delete id="deleteEmpower">
+        DELETE FROM empower WHERE uuid = #{uuid};
+    </delete>
+
+    <select id="findEmpower" resultType="com.example.kstupgrade.com.obj.EmpowerPoJo">
+            <include refid="baseselect"></include>
+            <where>
+                    1=1
+                <if test="searchvalue!='' and searchvalue!=null">
+                     and (sn Like '%{searchvalue}%'
+                    or sn Like '%${searchvalue}%'
+                    or lic Like '${searchvalue}%'
+                    or lic Like '%${searchvalue}%'
+                   )
+                </if>
+            </where>
+            order by  uploadtime desc
+        <if test="page!=null and page!=-1 and pagesize!=null and pagesize!=-1">
+            <bind name="startIndex" value="(page-1)*pagesize"></bind>
+            limit  #{startIndex} , #{pagesize};
+        </if>
+
+    </select>
+    <select id="getcount" resultType="java.lang.Long">
+         select  count(*) from (
+             <include refid="baseselect"></include>
+        <where>
+            1=1
+            <if test="searchvalue!='' and searchvalue!=null">
+                and (sn Like '%{searchvalue}%'
+                or sn Like '%${searchvalue}%'
+                or lic Like '${searchvalue}%'
+                or lic Like '%${searchvalue}%'
+                )
+            </if>
+        </where>
+    ) as c
+
+    </select>
+    <select id="findByuuid" resultType="com.example.kstupgrade.com.obj.EmpowerPoJo">
+        <include refid="baseselect"></include>
+        <where>
+            uuid=#{uuid}
+        </where>
+    </select>
+    <select id="findEmpowerBySn" resultType="com.example.kstupgrade.com.obj.EmpowerPoJo">
+        <include refid="baseselect"></include>
+        <where>
+            <if test="sncode!=null and sncode!= ''">
+            sncode=#{sncode}
+            </if>
+            <if test="sn!=null and sn!= ''">
+               and sn=#{sn}
+            </if>
+            <if test="lic!=null and lic!=''">
+              and  lic=#{lic}
+            </if>
+
+        </where>
+
+    </select>
+    <select id="findByPath" resultType="com.example.kstupgrade.com.obj.EmpowerPoJo">
+        <include refid="baseselect"></include>
+        <where>
+           snpath=#{snpath}
+        </where>
+
+
+    </select>
+    <select id="getempowerbytxtname" resultType="com.example.kstupgrade.com.obj.EmpowerPoJo">
+            select * from empower where sn=#{sn}
+
+
+    </select>
+    <select id="selectlicbyname" resultType="com.example.kstupgrade.com.obj.EmpowerPoJo">
+        select  * from  empower where sncode=#{lic}
+
+
+    </select>
+</mapper>

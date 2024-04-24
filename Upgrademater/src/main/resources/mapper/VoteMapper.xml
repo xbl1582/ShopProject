@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kstupgrade.dao.vote.VoteMapper">
+        <sql id="baseselect">
+            select * from votes
+
+        </sql>
+
+
+    <insert id="addVote">
+        INSERT INTO votes (uuid,votename,updatetime,votesize,type,path,downloadtime)
+        VALUES (
+                #{uuid},
+                #{votename},
+                #{updatetime},
+                #{votesize},
+                #{type},
+                #{path},
+                #{downloadtime}
+               );
+
+    </insert>
+    <update id="updateVote">
+        update  votes set
+            updatetime= #{updatetime},
+            votesize=   #{votesize},
+            type=  #{type},
+            path= #{path},
+            downloadtime=#{downloadtime},
+            priority=#{priority}
+        <where>
+            votename=#{votename} and uuid=#{uuid}
+        </where>
+
+
+    </update>
+    <update id="updateini">
+        update  votes set priority=0;
+
+
+    </update>
+    <delete id="deleteVote">
+        DELETE FROM votes WHERE uuid = #{uuid};
+    </delete>
+
+    <select id="findVotes" resultType="com.example.kstupgrade.com.obj.VotePoJo">
+            <include refid="baseselect"></include>
+            <where>
+                    1=1
+                <if test="searchvalue!='' and searchvalue!=null">
+                     and (votename Like '%${searchvalue}%'
+                    or votename Like '${searchvalue}%'
+                    or votename Like '%${searchvalue}')
+                </if>
+                <if test="type">
+                    and type=#{type}
+                </if>
+
+            </where>
+            order by priority desc, updatetime desc
+        <if test="page!=null and page!=-1 and pagesize!=null and pagesize!=-1">
+            <bind name="startIndex" value="(page-1)*pagesize"></bind>
+            limit  #{startIndex} , #{pagesize};
+
+        </if>
+    </select>
+    <select id="getcount" resultType="java.lang.Long">
+         select  count(*) from (
+             <include refid="baseselect"></include>
+        <where>
+            1=1
+            <if test="searchvalue!='' and searchvalue!=null">
+                and (votename Like '%${searchvalue}%'
+                or votename Like '${searchvalue}%'
+                or votename Like '%${searchvalue}')
+            </if>
+            <if test="type">
+                and type=#{type}
+            </if>
+        </where>
+    ) as c
+
+    </select>
+    <select id="findByuuid" resultType="com.example.kstupgrade.com.obj.VotePoJo">
+        <include refid="baseselect"></include>
+        <where>
+            uuid=#{uuid}
+        </where>
+    </select>
+    <select id="findVoteByName" resultType="com.example.kstupgrade.com.obj.VotePoJo">
+        <include refid="baseselect"></include>
+        <where>
+            votename=#{votename}
+        </where>
+
+    </select>
+    <select id="findByPath" resultType="com.example.kstupgrade.com.obj.VotePoJo">
+        <include refid="baseselect"></include>
+        <where>
+           path=#{path}
+        </where>
+
+
+    </select>
+    <select id="getMaxPriority" resultType="java.lang.Integer">
+        select  max(priority) from votes
+
+    </select>
+</mapper>

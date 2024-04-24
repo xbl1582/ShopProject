@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kstupgrade.dao.zip.ZipMapper">
+        <sql id="baseselect">
+            select * from zips
+
+        </sql>
+
+
+    <insert id="addZip">
+        INSERT INTO zips (uuid,zipname,updateloadtime,zipsize,type,os,version,versionchar,versiontype,path,md5code,downloadtime,`order`,nowuploadtime)
+        VALUES (
+                #{uuid},
+                #{zipname},
+                #{updateloadtime},
+                #{zipsize},
+                #{type},
+                #{os},
+                #{version},
+                #{versionchar},
+                #{versiontype},
+                #{path},
+                #{md5code},
+                #{downloadtime},
+                #{order},
+                #{nowuploadtime}
+               );
+
+    </insert>
+    <update id="updateZip">
+        update  zips set
+            updateloadtime= #{updateloadtime},
+            zipsize=   #{zipsize},
+            type=  #{type},
+            os= #{os},
+            version=#{version},
+            versiontype=  #{versiontype},
+            path= #{path},
+            md5code=  #{md5code},
+            downloadtime=#{downloadtime},
+            nowuploadtime=#{nowuploadtime}
+        <where>
+            zipname=#{zipname} and uuid=#{uuid}
+        </where>
+
+
+    </update>
+    <delete id="deleteZip">
+        DELETE FROM zips WHERE uuid = #{uuid};
+    </delete>
+
+
+    <select id="findbastNewZips" resultType="com.example.kstupgrade.com.obj.ZipPoJo">
+        select id,uuid,zipname,updateloadtime,zipsize,type,os,version,versiontype,path,md5code,`order`
+        from (
+        select *, max(updateloadtime),max(version) FROM zips
+        <where>
+            type=#{type}
+            <if test="os!=null and os !=''">
+                and os=#{os}
+            </if>
+            <if test="versiontype!=null and versiontype!=''">
+                and versiontype=#{versiontype}
+            </if>
+        </where>
+
+        GROUP BY path ,versiontype
+        order by `order`
+        )
+
+    </select>
+    <select id="findNewZipsByPath" resultType="com.example.kstupgrade.com.obj.ZipPoJo">
+        select id,uuid,zipname,updateloadtime,zipsize,type,os,version,versiontype,path,md5code,`order`
+        from (
+        select *, max(updateloadtime),max(version) FROM zips
+        <where>
+            type=#{type}
+            <if test="os!=null and os !=''">
+                and os=#{os}
+            </if>
+            <if test="versiontype!=null and versiontype!=''">
+                and versiontype = #{versiontype}
+            </if>
+
+            <if test="version!=null and version!=''">
+                and version <![CDATA[ >= ]]> #{version}
+            </if>
+            <if test="updateloadtime!=null and updateloadtime!=''">
+                and updateloadtime <![CDATA[ >= ]]> #{updateloadtime}
+
+            </if>
+            <if test="path!=null and path!=''">
+                and path=#{path}
+            </if>
+        </where>
+        GROUP BY versiontype
+
+        )
+        order by `order`,version
+    </select>
+
+
+
+    <select id="findZips" resultType="com.example.kstupgrade.com.obj.ZipPoJo">
+            <include refid="baseselect"></include>
+            <where>
+                    1=1
+                <if test="searchvalue!='' and searchvalue!=null">
+                     and (zipname Like '%${searchvalue}%'
+                    or zipname Like '${searchvalue}%'
+                    or zipname Like '%${searchvalue}')
+                </if>
+                <if test="type!=null">
+                    and type=#{type}
+                </if>
+                <if test="path!='' and path!=null">
+                    and path=#{path}
+                </if>
+                <if test="versionchar!='' and versionchar!=null">
+                    and versionchar=#{versionchar}
+                </if>
+                <if test="versiontype!='' and versiontype!=null">
+                    and versiontype=#{versiontype}
+                </if>
+                <if test="os!='' and os!=null">
+                    and os=#{os}
+                </if>
+            </where>
+            GROUP BY zipname
+            order by type asc, updateloadtime desc,version desc
+        <if test="page!=null and page!=-1 and pagesize!=null and pagesize!=-1">
+            <bind name="startIndex" value="(page-1)*pagesize"></bind>
+            limit  #{startIndex} , #{pagesize};
+        </if>
+
+    </select>
+    <select id="getcount" resultType="java.lang.Long">
+         select  count(*) from (
+             <include refid="baseselect"></include>
+        <where>
+            1=1
+            <if test="searchvalue!='' and searchvalue!=null">
+                and (zipname Like '%${searchvalue}%'
+                or zipname Like '${searchvalue}%'
+                or zipname Like '%${searchvalue}')
+            </if>
+            <if test="type">
+                and type=#{type}
+            </if>
+        </where>
+    ) as c
+
+    </select>
+    <select id="findByuuid" resultType="com.example.kstupgrade.com.obj.ZipPoJo">
+        <include refid="baseselect"></include>
+        <where>
+            uuid=#{uuid}
+        </where>
+    </select>
+    <select id="findZipByName" resultType="com.example.kstupgrade.com.obj.ZipPoJo">
+        <include refid="baseselect"></include>
+        <where>
+            zipname=#{zipname}
+        </where>
+
+    </select>
+    <select id="findByUpdateloadtimeAndPath" resultType="com.example.kstupgrade.com.obj.ZipPoJo">
+        <include refid="baseselect"></include>
+        <where>
+           path=#{path}
+           and  updateloadtime=#{updateloadtime}
+        </where>
+            order by version desc
+
+    </select>
+    <select id="findbeastnewrtmapp" resultType="com.example.kstupgrade.com.obj.ZipPoJo">
+        SELECT
+            *
+        FROM
+            (  select * FROM zips where
+                                      1=1
+        <if test="versiontype!=null and versiontype!=''">
+            and versiontype=#{versiontype}
+        </if>
+        <if test="os!=null and os!=''">
+            and os=#{os}
+        </if>
+        <if test="path!='' and path!=null">
+            and path=#{path}
+        </if>
+        <if test="type!=null and type!=''">
+            and (type=#{type} or type=0)
+        </if>
+        order by`order`, updateloadtime desc,version desc   ) AS b
+        GROUP BY
+            path
+        order by`order`;
+    </select>
+    <select id="findbeastnewupdatedapp" resultType="com.example.kstupgrade.com.obj.ZipPoJo">
+        SELECT
+        *
+        FROM
+        (  select * FROM zips where
+        1=1
+        <if test="path!=null and path!=''">
+            and path=#{path}
+        </if>
+        <if test="versiontype!=null and versiontype!=''">
+            and versiontype=#{versiontype}
+        </if>
+        <if test="os!=null and os!=''">
+            and os=#{os}
+        </if>
+        <if test="type!=null and type!=''">
+            and (type=#{type} or type=0)
+        </if>
+        order by`order`, updateloadtime desc,version desc   ) AS b
+        GROUP BY
+        path
+        order by`order`
+
+
+    </select>
+    <select id="getPaths" resultType="java.lang.String">
+        select  path from zips group by path order by  `order` ,type  ;
+    </select>
+    <select id="getVersions" resultType="com.example.kstupgrade.com.obj.dto.VersionAndTimeDto">
+
+        select versionchar,updateloadtime from zips where path=#{path}
+                                                    <if test="versiontype!=null and  versiontype!=''">
+                                                        and versiontype=#{versiontype}
+
+                                                    </if>
+        <if test="os!=null and  os!=''">
+            and os=#{os}
+
+        </if>
+
+
+        order by version desc
+        <if test="page!=null and page!=-1 and pagesize!=null and pagesize!=-1">
+        <bind name="startIndex" value="(page-1)*pagesize"></bind>
+        limit  #{startIndex} , #{pagesize};
+        </if>
+    </select>
+    <select id="getVersionsforZip" resultType="com.example.kstupgrade.com.obj.ZipPoJo">
+
+        select * from zips where path=#{path}
+           <if test="os!=null and os!=''">
+             and  os=#{os}
+
+           </if>
+        <if test="versiontype!=null and versiontype!=''">
+          and  versiontype=#{versiontype}
+
+        </if>
+         order by version desc
+        <if test="page!=null and page!=-1 and pagesize!=null and pagesize!=-1">
+        <bind name="startIndex" value="(page-1)*pagesize"></bind>
+        limit  #{startIndex} , #{pagesize};
+        </if>
+    </select>
+    <select id="getOs" resultType="java.lang.String">
+        select  os from zips where 1=1
+        <if test="versiontype!=null and  versiontype!=''">
+                           and      versiontype=#{versiontype}
+        </if>
+                               and path=#{path}  GROUP BY os;
+    </select>
+    <select id="getMaxVersions" resultType="java.lang.String">
+        select max(version) from zips where path=#{path}
+        <if test="versiontype!=null and  versiontype!=''">
+            and versiontype=#{versiontype}
+
+        </if>
+        <if test="os!=null and  os!=''">
+            and os=#{os}
+
+        </if>
+
+
+    </select>
+
+</mapper>

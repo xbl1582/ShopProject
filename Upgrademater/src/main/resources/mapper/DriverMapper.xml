@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kstupgrade.dao.driver.DriverMapper">
+        <sql id="baseselect">
+            select * from drivers
+
+        </sql>
+
+
+    <insert id="addDriver">
+        INSERT INTO drivers (uuid,drivername,updatetime,driversize,type,path,md5code,downloadtime)
+        VALUES (
+                #{uuid},
+                #{drivername},
+                #{updatetime},
+                #{driversize},
+                #{type},
+                #{path},
+                #{md5code},
+                #{downloadtime}
+               );
+
+    </insert>
+    <update id="updateDriver">
+        update  drivers set
+            updatetime= #{updatetime},
+            driversize=   #{driversize},
+            type=  #{type},
+            path= #{path},
+            md5code=  #{md5code},
+            downloadtime=#{downloadtime},
+            priority=#{priority}
+        <where>
+            drivername=#{drivername} and uuid=#{uuid}
+        </where>
+
+
+    </update>
+    <update id="updateini">
+
+            UPDATE drivers set priority=0;
+
+
+    </update>
+    <delete id="deleteDriver">
+        DELETE FROM drivers WHERE uuid = #{uuid};
+    </delete>
+
+
+
+
+
+
+    <select id="findDriver" resultType="com.example.kstupgrade.com.obj.DriverPoJo">
+            <include refid="baseselect"></include>
+            <where>
+                    1=1
+                <if test="searchvalue!='' and searchvalue!=null">
+                     and (drivername Like '%${searchvalue}%'
+                    or drivername Like '${searchvalue}%'
+                    or drivername Like '%${searchvalue}')
+                </if>
+                <if test="type">
+                    and type=#{type}
+                </if>
+
+            </where>
+            order by priority desc, updatetime desc
+        <if test="page!=null and page!=-1 and pagesize!=null and pagesize!=-1">
+            <bind name="startIndex" value="(page-1)*pagesize"></bind>
+            limit  #{startIndex} , #{pagesize};
+        </if>
+
+    </select>
+    <select id="getcount" resultType="java.lang.Long">
+         select  count(*) from (
+             <include refid="baseselect"></include>
+        <where>
+            1=1
+            <if test="searchvalue!='' and searchvalue!=null">
+                and (drivername Like '%${searchvalue}%'
+                or drivername Like '${searchvalue}%'
+                or drivername Like '%${searchvalue}')
+            </if>
+            <if test="type">
+                and type=#{type}
+            </if>
+        </where>
+    ) as c
+
+    </select>
+    <select id="findByuuid" resultType="com.example.kstupgrade.com.obj.DriverPoJo">
+        <include refid="baseselect"></include>
+        <where>
+            uuid=#{uuid}
+        </where>
+    </select>
+    <select id="findDriverByName" resultType="com.example.kstupgrade.com.obj.DriverPoJo">
+        <include refid="baseselect"></include>
+        <where>
+            drivername=#{drivername}
+        </where>
+
+    </select>
+    <select id="findByPath" resultType="com.example.kstupgrade.com.obj.DriverPoJo">
+        <include refid="baseselect"></include>
+        <where>
+           path=#{path}
+        </where>
+    </select>
+    <select id="getMaxPriority" resultType="java.lang.Integer">
+        select  max(priority) from drivers;
+
+    </select>
+</mapper>
