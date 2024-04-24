@@ -1,0 +1,78 @@
+.el-aside{
+   
+    background-color:rgba(233, 232, 232, 0.548);
+ 
+    height: 100%;
+}
+.el-header{
+    background-color:rgba(233, 233, 233, 0.596);
+    height: 52px;
+
+    padding: 0px;
+}
+.el-container{
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+}
+.el-main{
+    height: 95%;
+    padding-left: 20px;
+    padding-top:0px;
+}
+.btn{
+    margin-left: 80px;
+}
+.flex-grow {
+    flex-grow: 1;
+  }
+
+  .text{
+    margin-right: 30px;
+    line-height: 50px;
+    margin-top: 0px;
+    margin-left: 20px;
+  }
+  .time{
+    margin-right: 30px;
+    line-height: 50px;
+    margin-top: -6px;
+  }
+  .asidebtn2{
+    position: fixed;
+    bottom: 10%;
+    margin-left: 10px;
+}
+.asidebtn{
+
+    position: fixed;
+    bottom: 5%;
+}
+
+.title{
+    /* background-image: liner-gradient(#60b2f5,#97c3f5);  */
+    background-image: linear-gradient(to right,#05405765, #0f7bc46b,#ecdada);
+    height:50px ;
+    font-family: '楷体';
+    color:rgba(255, 255, 255, 0.856);
+    text-align: left;
+}
+.menue{
+    text-align: center;
+    width: 100%;
+    height: 98%;
+    margin-top: -10px;
+}
+.menue .el-button{
+    height: 100%;
+    border: none;
+}
+.el-menu-item{
+    margin-top: 10px;;
+}
+.el-input{
+    margin-top: 10px;
+}
+.textclass{
+    margin-left: 1.5rem;
+}

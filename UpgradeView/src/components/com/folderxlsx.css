@@ -1,0 +1,8 @@
+.box{
+    padding: 0px;
+    overflow-y: auto;
+}
+:deep(.x-spreadsheet-sheet){
+    width: 100% !important;
+    height: 100% !important;
+}

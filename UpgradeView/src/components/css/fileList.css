@@ -1,0 +1,89 @@
+.box-card {
+  width: 90%;
+  margin-top: 60px;
+  margin: 10px;
+
+}
+
+.card-header {
+  text-align: center;
+}
+
+:deep(.el-tabs__content) {
+  height: 100%;
+}
+
+.el-menu li {
+  margin-bottom: 20px;
+}
+
+:deep(.el-table, .el-table__expanded-cell) {
+  /**background-color: 你要设置的颜色;*/
+  background-color: transparent;
+}
+
+:deep(.el-main)::-webkit-scrollbar {
+  display: none;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item {
+  margin-bottom: 18px;
+}
+
+.box-card {
+  width: 95%;
+}
+.el-main {
+  --el-main-padding: 0px;
+  display: block;
+  flex: 1;
+  flex-basis: auto;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: var(--el-main-padding);
+}
+
+:deep(.el-card__body) {
+  padding:10px;
+}
+
+.listcontent {
+  height: 220px;
+  overflow: auto;
+}
+
+.allitem {
+  width: 100%;
+  min-height: 70px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.titlecontent {
+  position: absolute;
+  left: 50%;
+  top: 40px;
+
+}
+
+.elcardbox {
+  
+}
+
+.el-menu-item:hover{
+  outline: 0 !important;
+  color: rgb(3, 118, 248) !important;
+}
+.el-menu-item.is-active {
+  color: rgb(3, 118, 248) !important;
+  background: #dbdddd85!important;
+}
+.flex-grow {
+  flex-grow: 1;
+}

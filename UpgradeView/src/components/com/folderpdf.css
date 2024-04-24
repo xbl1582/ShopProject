@@ -1,0 +1,27 @@
+.box{
+    padding: 0px;
+    height: 100%;
+}
+.pdfview{
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.pdfview{
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+
+#pdf-container{
+    width: 95%;
+    height: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.pdf-calss{
+    width: 100%;
+    height: 97%;
+    overflow: auto;
+}
